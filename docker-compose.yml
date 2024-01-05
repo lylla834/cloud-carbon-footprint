@@ -11,25 +11,31 @@ services:
     depends_on:
       - api
     environment:
-      - NODE_OPTIONS=--max-old-space-size=2048
+      - NODE_OPTIONS=--max-old-space-size=4096
+      - REACT_APP_GROUP_BY='day'
 
   api:
     image: cloudcarbonfootprint/api:release-2023-10-17
     restart: always
+    secrets:
+      - AZURE_CLIENT_ID
+      - AZURE_CLIENT_SECRET
+      - AZURE_TENANT_ID
     environment:
       - CACHE_MODE=LOCAL
       - AZURE_USE_BILLING_DATA=true
       - AZURE_CLIENT_ID=/run/secrets/AZURE_CLIENT_ID
       - AZURE_CLIENT_SECRET=/run/secrets/AZURE_CLIENT_SECRET
       - AZURE_TENANT_ID=/run/secrets/AZURE_TENANT_ID 
-      - AZURE_CONSUMPTION_CHUNKS_DAYS=3
-      - AZURE_SUBSCRIPTIONS="73950e61-893d-4b97-84ea-3a0b33335d0b"
+      - AZURE_CONSUMPTION_CHUNKS_DAYS=1
+      - AZURE_SUBSCRIPTIONS=["73950e61-893d-4b97-84ea-3a0b33335d0b"]
       - NODE_OPTIONS=--max-old-space-size=4096
+      - AZURE_AUTH_MODE=default
         
 secrets:
   AZURE_CLIENT_ID:
-    file: ~/.docker/secrets/AZURE_CLIENT_ID
+    file: /home/.docker/secrets/AZURE_CLIENT_ID 
   AZURE_CLIENT_SECRET:
-    file: ~/.docker/secrets/AZURE_CLIENT_SECRET
+    file: /home/.docker/secrets/AZURE_CLIENT_SECRET 
   AZURE_TENANT_ID:
-    file: ~/.docker/secrets/AZURE_TENANT_ID
+    file: /home/.docker/secrets/AZURE_TENANT_ID
